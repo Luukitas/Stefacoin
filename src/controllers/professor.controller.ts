@@ -70,8 +70,5 @@ export default class ProfessorController {
         id,
       });
     }
-
-
-
   }
 }

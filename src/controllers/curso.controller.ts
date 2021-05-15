@@ -3,6 +3,8 @@ import CursoRepository from '../repositories/curso.repository';
 import { FilterQuery } from '../utils/database/database';
 import Mensagem from '../utils/mensagem';
 import { Validador } from '../utils/utils';
+import AlunoRepository from '../repositories/aluno.repository';
+import BusinessException from '../utils/exceptions/business.exception';
 
 export default class CursoController {
   
@@ -43,11 +45,26 @@ export default class CursoController {
 
   async excluir(id: number) {
     Validador.validarParametros([{ id }]);
-
-    await CursoRepository.excluir({ id });
-
-    return new Mensagem('Aula excluido com sucesso!', {
-      id,
-    });
+    let cursando = false
+    let lista = await AlunoRepository.listar()
+    for(let l of lista) {
+      if(l.cursos != undefined){
+        for(let curso of l.cursos){
+          if(curso.id == id){
+            cursando = true
+          }
+        }
+      }
+    }
+    if(cursando == true){
+      throw new BusinessException('Você não pode excluir este curso, pois há alunos cursando ele')
+    }
+    else{
+      await CursoRepository.excluir({ id });
+  
+      return new Mensagem('Aula excluido com sucesso!', {
+        id,
+      });
+    }
   }
 }
