@@ -18,15 +18,23 @@ export default class AulaController {
 
   async incluir(aula: Aula) {
     const { nome, duracao, topicos, idCurso } = aula;
+
     Validador.validarParametros([{ nome }, { duracao }, { topicos }, { idCurso }]);
-
-    const curso = await CursoRepository.obterPorId(idCurso);
-
-    const idAnterior = curso.aulas[curso.aulas.length - 1].id;
-    aula.id = idAnterior ? idAnterior + 1 : 1;
+    
+    const curso = await CursoRepository.obterPorId(Number(idCurso))
+    
+    if(curso.aulas.length == 0){
+      aula.id = 1 
+    }
+    else{
+      const idAnterior = curso.aulas[curso.aulas.length - 1].id;
+      aula.id = idAnterior ? idAnterior + 1 : 1;
+    }
     curso.aulas.push(aula);
 
+    
     await CursoRepository.alterar({ id: idCurso }, curso);
+    
 
     return new Mensagem('Aula incluido com sucesso!', {
       id: aula.id,

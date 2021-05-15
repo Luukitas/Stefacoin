@@ -3,6 +3,7 @@ import AlunoRepository from '../repositories/aluno.repository';
 import { FilterQuery } from '../utils/database/database';
 import Mensagem from '../utils/mensagem';
 import { Validador } from '../utils/utils';
+import BusinessException from '../utils/exceptions/business.exception';
 
 export default class AlunoController {
   async obterPorId(id: number): Promise<Aluno> {
@@ -15,18 +16,33 @@ export default class AlunoController {
   }
 
   // #pegabandeira
-  async listar(filtro: FilterQuery<Aluno> = {}): Promise<Aluno[]> {
+  async listar(filtro: FilterQuery<Aluno> = {tipo:2}): Promise<Aluno[]> {
     return await AlunoRepository.listar(filtro);
   }
 
-  // #pegabandeira
+  // #pegabandeirax'
   async incluir(aluno: Aluno) {
     const { nome, formacao, idade, email, senha } = aluno;
-    Validador.validarParametros([{ nome }, { formacao }, { idade }, { email }, { senha }]);
-    const id = await AlunoRepository.incluir(aluno);
-    return new Mensagem('Aluno incluido com sucesso!', {
-      id,
-    });
+
+    const usuarioExistente = await this.obter({email})
+
+    if(usuarioExistente){
+      throw new BusinessException('O usuario com este email já existente')
+    }
+    if(typeof(aluno.nome) != 'string'
+    || typeof(aluno.formacao) != 'string'
+    || typeof(aluno.email) != 'string'
+    || typeof(aluno.senha) != 'string' 
+    || typeof(aluno.idade) != 'number'){
+      throw new BusinessException('Insira valores válidos')
+    }
+    else{
+      Validador.validarParametros([{ nome }, { formacao }, { idade }, { email }, { senha }]);
+      const id = await AlunoRepository.incluir(aluno);
+      return new Mensagem('Aluno incluido com sucesso!', {
+        id,
+      });
+    }
   }
 
   async alterar(id: number, aluno: Aluno) {

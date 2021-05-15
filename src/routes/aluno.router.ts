@@ -36,9 +36,19 @@ router.delete('/aluno/:id', async (req: Request, res: Response, next: NextFuncti
 
 router.get('/aluno/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    let retornoAluno: any = ''
     const { id } = req.params;
     const aluno: Aluno = await new AlunoController().obterPorId(Number(id));
-    res.json(aluno);
+    retornoAluno = {
+      nome: aluno.nome,
+        email: aluno.email,
+        tipo: aluno.tipo,
+        id: aluno.id,
+        idade: aluno.idade,
+        formacao: aluno.formacao,
+        cursos: aluno.cursos
+    }
+    res.json(retornoAluno);
   } catch (e) {
     next(e);
   }
@@ -46,8 +56,20 @@ router.get('/aluno/:id', async (req: Request, res: Response, next: NextFunction)
 
 router.get('/aluno', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const listaAluno: any = []
     const alunos: Aluno[] = await new AlunoController().listar();
-    res.json(alunos);
+    for(let a of alunos){
+      listaAluno.push({
+        nome: a.nome,
+        email: a.email,
+        tipo: a.tipo,
+        id: a.id,
+        idade: a.idade,
+        formacao: a.formacao,
+        cursos: a.cursos
+      });
+    }
+    res.json(listaAluno);
   } catch (e) {
     next(e);
   }

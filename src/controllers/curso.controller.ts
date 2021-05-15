@@ -5,6 +5,7 @@ import Mensagem from '../utils/mensagem';
 import { Validador } from '../utils/utils';
 
 export default class CursoController {
+  
   async obterPorId(id: number): Promise<Curso> {
     Validador.validarParametros([{ id }]);
     return await CursoRepository.obterPorId(id);

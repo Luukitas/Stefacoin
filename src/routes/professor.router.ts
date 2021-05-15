@@ -12,6 +12,7 @@ router.post('/professor', async (req: Request, res: Response, next: NextFunction
   } catch (e) {
     next(e);
   }
+  
 });
 
 router.put('/professor/:id', async (req: Request, res: Response, next: NextFunction) => {
@@ -36,9 +37,16 @@ router.delete('/professor/:id', async (req: Request, res: Response, next: NextFu
 
 router.get('/professor/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    let retornoProf: any = ''
     const { id } = req.params;
     const professor: Professor = await new ProfessorController().obterPorId(Number(id));
-    res.json(professor);
+    retornoProf = {
+      nome: professor.nome,
+        email: professor.email,
+        tipo: professor.tipo,
+        id: professor.id
+    }
+    res.json(retornoProf);
   } catch (e) {
     next(e);
   }
@@ -46,7 +54,16 @@ router.get('/professor/:id', async (req: Request, res: Response, next: NextFunct
 
 router.get('/professor', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const listaProfessores: any = []
     const professores: Professor[] = await new ProfessorController().listar();
+    for(let p of professores){
+      listaProfessores.push({ 
+        nome: p.nome,
+        email: p.email,
+        tipo: p.tipo,
+        id: p.id
+      })
+    }
     res.json(professores);
   } catch (e) {
     next(e);

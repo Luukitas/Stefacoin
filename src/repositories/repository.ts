@@ -26,6 +26,7 @@ export default class Repository<T extends Entity> {
   }
 
   async alterar(filtro: FilterQuery<T>, dado: Partial<T>): Promise<number> {
+    console.log(filtro)
     return Database.alterar<T>(filtro, dado, this.table);
   }
 

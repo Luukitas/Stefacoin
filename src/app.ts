@@ -5,6 +5,7 @@ import AlunoRouter from './routes/aluno.router';
 import AulaRouter from './routes/aula.router';
 import AuthRouter from './routes/auth.router';
 import CursoRouter from './routes/curso.router';
+import CadastroRouter from './routes/cadastro.router';
 import ProfessorRouter from './routes/professor.router';
 import Database from './utils/database/database';
 import Exception from './utils/exceptions/exception';
@@ -49,6 +50,7 @@ class App {
   // #pegabandeira
   private publicRoutes() {
     this.app.use('/stefanini', AuthRouter);
+    this.app.use('/stefanini', CadastroRouter);
   }
 
   // #pegabandeira
@@ -63,6 +65,7 @@ class App {
   private authMiddleware() {
     this.app.use(auth);
   }
+
 }
 
 export default new App().app;

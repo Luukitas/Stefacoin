@@ -6,6 +6,7 @@ export default class Curso extends Entity {
   descricao: string;
   idProfessor?: number;
   aulas?: Aula[];
+  nota?: [];
 
   constructor() {
     super();
